@@ -5,6 +5,12 @@ import (
 	"net/http"
 )
 
+type AppStatus struct{
+	Status		string `json:"status"`
+	Environment	string `json:"environment"`
+	Version		string `json:"version"`
+}
+
 func (app *application) statusHandler(w http.ResponseWriter, r *http.Request){
 	currentStatus := AppStatus{
 		Status: "Available",
