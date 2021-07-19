@@ -21,6 +21,11 @@ func (app *application) getOneMovie(w http.ResponseWriter, r *http.Request){
 	app.logger.Println("id id", id)
 
 	movie, err := app.models.DB.Get(id)
+	if err != nil{
+		app.logger.Print(err)
+		app.ErrorJSON(w, err)
+		return
+	}
 
 	err = app.WriteJSON(w, http.StatusOK, movie, "movie")
 	if err != nil{
