@@ -29,15 +29,7 @@ type Movie struct{
 	MPAARating	string			`json:"mpaa_rating"`
 	CreatedAd	time.Time		`json:"-"`
 	UpdatedAt	time.Time		`json:"-"`
-	MovieGenre	[]MovieGenre	`json:"genres"`
-}
-
-// Genre is the type for genre
-type Genre struct{
-	ID 			int			`json:"-"`
-	GenreName	string		`json:"genre_name"`
-	CreatedAd	time.Time	`json:"-"`
-	UpdatedAt	time.Time	`json:"-"`
+	MovieGenre	map[int]string	`json:"genres"`
 }
 
 // MovieGenre is the type for movie genre
@@ -46,6 +38,14 @@ type MovieGenre struct{
 	MovieID		string		`json:"-"`
 	GenreID		string		`json:"-"`
 	Genre		Genre		`json:"genre"`
+	CreatedAd	time.Time	`json:"-"`
+	UpdatedAt	time.Time	`json:"-"`
+}
+
+// Genre is the type for genre
+type Genre struct{
+	ID 			int			`json:"-"`
+	GenreName	string		`json:"genre_name"`
 	CreatedAd	time.Time	`json:"-"`
 	UpdatedAt	time.Time	`json:"-"`
 }
