@@ -5,19 +5,19 @@ import (
 	"time"
 )
 
-// Models is the wrapper for database
+// Models はデータベースのラッパーです
 type Models struct{
 	DB DBModel
 }
 
-// NewModels returns models with db pool
+// NewModels はdbプールを持つモデルを返します
 func NewModels(db *sql.DB) Models{
 	return Models{
 		DB: DBModel{DB: db},
 	}
 }
 
-// Movie is the type for movie
+// Movie は映画のタイプです
 type Movie struct{
 	ID			int				`json:"id"`
 	Title		string			`json:"title"`
@@ -32,7 +32,7 @@ type Movie struct{
 	MovieGenre	map[int]string	`json:"genres"`
 }
 
-// MovieGenre is the type for movie genre
+// MovieGenre は映画ジャンルのタイプです
 type MovieGenre struct{
 	ID 			int			`json:"-"`
 	MovieID		string		`json:"-"`
@@ -42,7 +42,7 @@ type MovieGenre struct{
 	UpdatedAt	time.Time	`json:"-"`
 }
 
-// Genre is the type for genre
+// Genre はジャンルのタイプです
 type Genre struct{
 	ID 			int			`json:"-"`
 	GenreName	string		`json:"genre_name"`

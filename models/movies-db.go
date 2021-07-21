@@ -10,7 +10,7 @@ type DBModel struct{
 	DB *sql.DB
 }
 
-// Get returns one movie and error, if any
+// Get は、もしidが一致する映画が１つあれば、その映画とエラーを返します
 func (m *DBModel) Get(id int) (*Movie, error){
 	ctx, cancel := context.WithTimeout(context.Background(), 3 * time.Second)
 	defer cancel()
@@ -37,7 +37,7 @@ func (m *DBModel) Get(id int) (*Movie, error){
 		return nil, err
 	}
 
-	// get the genres
+	// ジャンルを取得する
 	query = `select
 				mg.id, mg.movie_id, mg.genre_id, g.genre_name
 			from
@@ -70,7 +70,7 @@ func (m *DBModel) Get(id int) (*Movie, error){
 	return &movie, nil
 }
 
-// All returns all movies and error, if any
+// All は、すべての映画とエラー（ある場合）を返します
 func (m *DBModel) All() ([]*Movie, error){
 	ctx, cancel := context.WithTimeout(context.Background(), 3 * time.Second)
 	defer cancel();
@@ -105,7 +105,7 @@ func (m *DBModel) All() ([]*Movie, error){
 			return nil, err
 		}
 
-		// get the genres
+		// ジャンルを取得する
 		genreQuery := `select
 					mg.id, mg.movie_id, mg.genre_id, g.genre_name
 				from
