@@ -44,7 +44,7 @@ type MovieGenre struct{
 
 // Genre はジャンルのタイプです
 type Genre struct{
-	ID 			int			`json:"-"`
+	ID 			int			`json:"id"`
 	GenreName	string		`json:"genre_name"`
 	CreatedAd	time.Time	`json:"-"`
 	UpdatedAt	time.Time	`json:"-"`
