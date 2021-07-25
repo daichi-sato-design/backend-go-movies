@@ -16,8 +16,11 @@ func (m *DBModel) Get(id int) (*Movie, error){
 	ctx, cancel := context.WithTimeout(context.Background(), 3 * time.Second)
 	defer cancel()
 
-	query := `select id, title, description, year, release_date, runtime, rating, mpaa_rating,
-				created_at, updated_at from movies where id = $1
+	query := `
+		select
+			id, title, description, year, release_date, runtime, rating, mpaa_rating, created_at, updated_at
+		from
+			movies where id = $1
 	`
 	row := m.DB.QueryRowContext(ctx, query, id)
 
@@ -39,14 +42,14 @@ func (m *DBModel) Get(id int) (*Movie, error){
 	}
 
 	// ジャンルを取得する
-	query = `select
-				mg.id, mg.movie_id, mg.genre_id, g.genre_name
-			from
-				movies_genres mg
-				left join genres g on (g.id = mg.genre_id)
-			where
-				mg.movie_id = $1 
-
+	query = `
+		select
+			mg.id, mg.movie_id, mg.genre_id, g.genre_name
+		from
+			movies_genres mg
+			left join genres g on (g.id = mg.genre_id)
+		where
+			mg.movie_id = $1 
 	`
 	rows, _ := m.DB.QueryContext(ctx, query, id)
 	defer rows.Close()
@@ -82,8 +85,11 @@ func (m *DBModel) All(genre ...int) ([]*Movie, error){
 		where = fmt.Sprintf("where id in (select movie_id from movies_genres where genre_id = %d)", genre[0])
 	}
 
-	query := fmt.Sprintf(`select id, title, description, year, release_date, runtime, rating, mpaa_rating, created_at, updated_at 
-							from movies %s order by title`, where)
+	query := fmt.Sprintf(`
+		select 
+			id, title, description, year, release_date, runtime, rating, mpaa_rating, created_at, updated_at 
+		from 
+			movies %s order by title`, where)
 
 	rows, err := m.DB.QueryContext(ctx, query)
 	if err != nil {
@@ -112,14 +118,14 @@ func (m *DBModel) All(genre ...int) ([]*Movie, error){
 		}
 
 		// ジャンルを取得する
-		genreQuery := `select
-					mg.id, mg.movie_id, mg.genre_id, g.genre_name
-				from
-					movies_genres mg
-					left join genres g on (g.id = mg.genre_id)
-				where
-					mg.movie_id = $1 
-	
+		genreQuery := `
+			select
+				mg.id, mg.movie_id, mg.genre_id, g.genre_name
+			from
+				movies_genres mg
+				left join genres g on (g.id = mg.genre_id)
+			where
+				mg.movie_id = $1 
 		`
 		genreRows, _ := m.DB.QueryContext(ctx, genreQuery, movie.ID)
 	
@@ -151,7 +157,11 @@ func (m *DBModel) GenresAll() ([]*Genre, error){
 	ctx, cancel := context.WithTimeout(context.Background(), 3 * time.Second)
 	defer cancel()
 
-	query := `select id, genre_name, created_at, updated_at from genres order by genre_name`
+	query := `select 
+				id, genre_name, created_at, updated_at 
+			from
+				genres order by genre_name
+	`
 
 	rows, err := m.DB.QueryContext(ctx, query)
 	if err != nil{
@@ -176,4 +186,31 @@ func (m *DBModel) GenresAll() ([]*Genre, error){
 	}
 
 	return genres, nil
+}
+
+
+func (m *DBModel) InsertMovie(movie Movie) error{
+	ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+	defer cancel()
+
+	stmt := `
+		insert into movies (title, description, year, release_date, runtime, rating, mpaa_rating, created_at, updated_at)
+		values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+	`
+
+	_, err := m.DB.ExecContext(ctx, stmt,
+		movie.Title,
+		movie.Description,
+		movie.Year,
+		movie.ReleaseDate, 
+		movie.Runtime,
+		movie.Rating,
+		movie.MPAARating,
+		movie.CreatedAd,
+		movie.UpdatedAt,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
 }
