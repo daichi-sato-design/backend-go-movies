@@ -188,7 +188,6 @@ func (m *DBModel) GenresAll() ([]*Genre, error){
 	return genres, nil
 }
 
-
 func (m *DBModel) InsertMovie(movie Movie) error{
 	ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
 	defer cancel()
@@ -208,6 +207,33 @@ func (m *DBModel) InsertMovie(movie Movie) error{
 		movie.MPAARating,
 		movie.CreatedAd,
 		movie.UpdatedAt,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *DBModel) UpdateMovie(movie Movie) error{
+	ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+	defer cancel()
+
+	stmt := `
+		update movies set 
+			title = $1, description = $2, year = $3, release_date = $4, runtime = $5, rating = $6, mpaa_rating = $7, updated_at = $8
+		where id = $9
+	`
+
+	_, err := m.DB.ExecContext(ctx, stmt,
+		movie.Title,
+		movie.Description,
+		movie.Year,
+		movie.ReleaseDate, 
+		movie.Runtime,
+		movie.Rating,
+		movie.MPAARating,
+		movie.UpdatedAt,
+		movie.ID,
 	)
 	if err != nil {
 		return err
