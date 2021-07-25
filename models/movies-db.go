@@ -157,10 +157,11 @@ func (m *DBModel) GenresAll() ([]*Genre, error){
 	ctx, cancel := context.WithTimeout(context.Background(), 3 * time.Second)
 	defer cancel()
 
-	query := `select 
-				id, genre_name, created_at, updated_at 
-			from
-				genres order by genre_name
+	query := `
+		select 
+			id, genre_name, created_at, updated_at 
+		from
+			genres order by genre_name
 	`
 
 	rows, err := m.DB.QueryContext(ctx, query)
@@ -193,8 +194,10 @@ func (m *DBModel) InsertMovie(movie Movie) error{
 	defer cancel()
 
 	stmt := `
-		insert into movies (title, description, year, release_date, runtime, rating, mpaa_rating, created_at, updated_at)
-		values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+		insert into
+			movies (title, description, year, release_date, runtime, rating, mpaa_rating, created_at, updated_at)
+		values
+			($1, $2, $3, $4, $5, $6, $7, $8, $9)
 	`
 
 	_, err := m.DB.ExecContext(ctx, stmt,
@@ -221,7 +224,8 @@ func (m *DBModel) UpdateMovie(movie Movie) error{
 	stmt := `
 		update movies set 
 			title = $1, description = $2, year = $3, release_date = $4, runtime = $5, rating = $6, mpaa_rating = $7, updated_at = $8
-		where id = $9
+		where 
+			id = $9
 	`
 
 	_, err := m.DB.ExecContext(ctx, stmt,
