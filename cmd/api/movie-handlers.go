@@ -14,7 +14,6 @@ import (
 
 func (app *application) getOneMovie(w http.ResponseWriter, r *http.Request){
 	params := httprouter.ParamsFromContext(r.Context())
-
 	id, err := strconv.Atoi(params.ByName("id"))
 	if err != nil{
 		app.logger.Print(errors.New("invalid id parametar"))
@@ -66,9 +65,9 @@ func (app *application) getAllGenres(w http.ResponseWriter, r *http.Request){
 
 func (app *application) getAllMoviesByGenre(w http.ResponseWriter, r *http.Request){
 	params := httprouter.ParamsFromContext(r.Context())
-
 	genreID, err := strconv.Atoi(params.ByName("genre_id"))
 	if err != nil{
+		app.logger.Print(errors.New("invalid genre_id parametar"))
 		app.errorJSON(w, err)
 		return
 	}
@@ -87,7 +86,28 @@ func (app *application) getAllMoviesByGenre(w http.ResponseWriter, r *http.Reque
 }
 
 func (app *application) deleteMovie(w http.ResponseWriter, r *http.Request){
+	params := httprouter.ParamsFromContext(r.Context())
+	id, err := strconv.Atoi(params.ByName("id"))
+	if err != nil{
+		app.logger.Print(errors.New("invalid id parametar"))
+		app.errorJSON(w, err)
+		return
+	}
 
+	err = app.models.DB.DeleteMovie(id)
+	if err != nil{
+		app.errorJSON(w, err);
+		return
+	}
+
+	ok := jsonResp{
+		OK: true,
+	}
+	err = app.writeJSON(w, http.StatusOK, ok, "response")
+	if err != nil{
+		app.errorJSON(w, err)
+		return
+	}
 }
 
 type MoviePayload struct{
