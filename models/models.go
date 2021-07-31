@@ -49,3 +49,10 @@ type Genre struct{
 	CreatedAd	time.Time	`json:"-"`
 	UpdatedAt	time.Time	`json:"-"`
 }
+
+// User はユーザーのタイプです
+type User struct{
+	ID			int
+	Email		string
+	Password	string
+}
