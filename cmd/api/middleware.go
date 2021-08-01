@@ -44,32 +44,32 @@ func (app *application) checkToken(next http.Handler)http.Handler{
 
 		cliams, err := jwt.HMACCheck([]byte(token), []byte(app.config.jwt.secret))
 		if err != nil {
-			app.errorJSON(w, errors.New("unauthorizad - failed hmac check"))
+			app.errorJSON(w, errors.New("unauthorizad - failed hmac check"), http.StatusForbidden)
 			return
 		}
 
 		if !cliams.Valid(time.Now()){
-			app.errorJSON(w, errors.New("unauthorizad - token expired"))
+			app.errorJSON(w, errors.New("unauthorizad - token expired"), http.StatusForbidden)
 			return
 		}
 
 		if !cliams.AcceptAudience("mydomain.com"){
-			app.errorJSON(w, errors.New("unauthorizad - invalid audience"))
+			app.errorJSON(w, errors.New("unauthorizad - invalid audience"), http.StatusForbidden)
 			return
 		}
 
 		if cliams.Issuer != "mydomain.com"{
-			app.errorJSON(w, errors.New("unauthorizad - invalid issuer"))
+			app.errorJSON(w, errors.New("unauthorizad - invalid issuer"), http.StatusForbidden)
 			return
 		}
 
 		userID, err := strconv.ParseInt(cliams.Subject, 10, 64)
 		if err != nil{
-			app.errorJSON(w, errors.New("unauthorizad"))
+			app.errorJSON(w, errors.New("unauthorizad"), http.StatusForbidden)
 			return
 		}
 
-		log.Println("Valid user: ", userID)
+		log.Println("Valid user:", userID)
 
 		next.ServeHTTP(w, r)
 	})
