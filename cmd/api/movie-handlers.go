@@ -178,7 +178,3 @@ func (app *application) editMovie(w http.ResponseWriter, r *http.Request){
 		return
 	}
 }
-
-func (app *application) searchMovies(w http.ResponseWriter, r *http.Request){
-	
-}
